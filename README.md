@@ -4,7 +4,7 @@ A modern, responsive, and animated web-based scoreboard for the **Hazari** card 
 
 ## 🔗 [Live Demo](https://maijied.github.io/Hazari_Scoreboard/)
 
-![Hazari Scoreboard Preview](https://via.placeholder.com/800x400?text=Hazari+Scoreboard+Preview)
+![Hazari Scoreboard Preview](/resource/onboard.png)
 
 ## ✨ Features
 
