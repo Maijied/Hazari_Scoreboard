@@ -13,14 +13,14 @@ A modern, responsive, and animated web-based scoreboard for the **Hazari** card 
 *   **🎨 Glassy UI:** A beautiful, modern interface featuring glassmorphism effects and animated backgrounds.
 *   **📱 Fully Responsive:** Optimized for both desktop and mobile devices.
 *   **📜 Match History:** Keep track of previous games via the sidebar history.
-*   **⚡ Validation:** Ensures round scores sum up to exactly 1000 points before adding.
+*   **⚡ Validation:** Ensures round scores sum up to exactly 360 points before adding.
 *   **🎉 Animations:** Fun confetti celebrations for the winner and smooth UI transitions.
 
 ## 🚀 How to Use
 
 1.  **Open the App:** Visit the [Live Link](https://maijied.github.io/Hazari_Scoreboard/).
 2.  **Setup Players:** Enter the names of the 4 players.
-3.  **Add Scores:** After every round, enter the points for each player. The app ensures the total is 1000.
+3.  **Add Scores:** After every round, enter the points for each player. The app ensures the total is 360.
 4.  **Win:** The first player to reach 1000 points triggers the victory screen!
 
 ## 🛠️ Tech Stack
@@ -51,3 +51,13 @@ Feel free to fork this repository and submit pull requests for any improvements 
 ## 📄 License
 
 This project is open-source and available under the MIT License.
+
+---
+
+### 🏷️ Repository Metadata (For GitHub)
+
+**Description:**
+> A modern, glassmorphism-styled scoreboard for the Hazari card game. Features 1000-point validation, auto-save, and winner highlighting.
+
+**Topics:**
+`hazari` `card-game` `scoreboard` `glassmorphism` `javascript` `localstorage` `responsive-design` `score-keeper` `web-app` `bootstrap-5`

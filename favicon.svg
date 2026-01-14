@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Card Background -->
+  <rect x="4" y="4" width="56" height="56" rx="8" ry="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  
+  <!-- Crown Icon (Gold/Orange) -->
+  <path d="M16 26 L22 38 L32 24 L42 38 L48 26 L48 42 L16 42 Z" fill="#f59e0b" stroke="#d97706" stroke-width="1" stroke-linejoin="round"/>
+  
+  <!-- "K" Text (Dark Slate) -->
+  <text x="50%" y="80%" font-family="sans-serif" font-weight="bold" font-size="28" text-anchor="middle" fill="#1e293b">K</text>
+</svg>

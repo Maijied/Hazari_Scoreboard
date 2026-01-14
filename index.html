@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hazari Scoreboard</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,17 +37,17 @@
                 </div>
                 Hazari
             </div>
-            
+
             <div class="list-group list-group-flush my-3 px-3">
                 <button id="btn-new-match" class="btn btn-glass w-100 mb-3 text-start">
                     <i class="fa-solid fa-plus me-2"></i> New Match
                 </button>
-                
+
                 <h6 class="sidebar-subtitle mt-2 mb-2 text-muted text-uppercase ps-2">History</h6>
                 <div id="match-list" class="match-list-container">
                     <!-- History injected here -->
                 </div>
-                
+
                 <button id="btn-clear-history" class="btn btn-link text-danger text-decoration-none mt-3 text-start ps-0">
                     <i class="fa-solid fa-trash me-2"></i> Clear History
                 </button>
@@ -56,7 +57,7 @@
 
         <!-- Page Content -->
         <div id="page-content-wrapper" class="w-100 d-flex flex-column" style="height: 100vh; overflow: hidden;">
-            
+
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg glass-navbar py-3 px-4 mb-3">
                 <div class="d-flex align-items-center w-100 justify-content-between">
@@ -69,7 +70,7 @@
 
             <!-- Main Scrollable Area -->
             <div class="container-fluid px-4 flex-grow-1 overflow-auto" id="main-container">
-                
+
                 <!-- Setup View -->
                 <section id="view-setup" class="view active fade-in">
                     <div class="row justify-content-center mt-5">
@@ -84,7 +85,7 @@
 
                                 <h2 class="fw-bold mb-3">Start New Match</h2>
                                 <p class="text-muted mb-4">Enter the names of the 4 challengers</p>
-                                
+
                                 <form id="setup-form">
                                     <div class="row g-2 mb-3">
                                         <div class="col-6"><input type="text" class="form-control glass-input" id="p1-name" placeholder="Player 1" required></div>
@@ -101,14 +102,14 @@
 
                 <!-- Scoreboard View -->
                 <section id="view-scoreboard" class="view d-none fade-in h-100 d-flex flex-column pb-5">
-                    
+
                     <!-- Score Table Card -->
                     <div class="glass-card flex-grow-1 d-flex flex-column overflow-hidden mb-3">
                         <!-- Header -->
                         <div class="score-header-row d-flex text-center fw-bold py-3 border-bottom border-light-subtle bg-white-50" id="score-header">
                             <!-- JS Injects Names -->
                         </div>
-                        
+
                         <!-- Scrollable Body -->
                         <div class="score-body flex-grow-1 overflow-auto" id="score-body">
                             <!-- JS Injects Rows -->
@@ -128,7 +129,7 @@
                                 <i class="fa-solid fa-rotate-right me-1"></i> Reset Round
                             </button>
                         </div>
-                        
+
                         <form id="round-form">
                             <div class="row g-2">
                                 <div class="col-3"><input type="number" class="form-control glass-input text-center fw-bold" id="s1" placeholder="P1" required></div>
@@ -150,7 +151,7 @@
 
                 <!-- Footer -->
                 <footer class="text-center mt-auto py-3 text-muted" style="font-size: 0.85rem;">
-                    Made with ❤️ for the Hazari Players community by <span class="fw-bold text-primary">@#MaJHi_BHai</span>
+                    Made with ❤️ for the Hazari Players community by <span class="fw-bold text-primary">#MaJHi_BHai</span>
                 </footer>
 
             </div>

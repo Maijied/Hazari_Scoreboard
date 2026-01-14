@@ -165,12 +165,15 @@ function loadGame(id) {
 
 function renderScoreboard(game) {
     // Header
-    dom.scoreHeader.innerHTML = game.players.map(p => `<div>${p}</div>`).join('');
+    dom.scoreHeader.innerHTML = game.players.map(p => `<div>${p}</div>`).join('') + '<div style="flex: 0 0 40px;"></div>';
     
     // Body
-    dom.scoreBody.innerHTML = game.rounds.map((round) => {
+    dom.scoreBody.innerHTML = game.rounds.map((round, idx) => {
         return `<div class="score-row">
             ${round.map(s => `<div>${s}</div>`).join('')}
+            <div style="flex: 0 0 40px;" class="text-danger cursor-pointer" onclick="deleteRound(${idx})">
+                <i class="fa-solid fa-times"></i>
+            </div>
         </div>`;
     }).join('');
     
@@ -184,7 +187,17 @@ function renderScoreboard(game) {
     dom.scoreFooter.innerHTML = totals.map(t => {
         const isWinner = t >= 1000;
         return `<div class="${isWinner ? 'winner-highlight' : ''}">${t}</div>`;
-    }).join('');
+    }).join('') + '<div style="flex: 0 0 40px;"></div>';
+}
+
+function deleteRound(index) {
+    if (!confirm("Delete this round?")) return;
+    const game = getGame(STATE.currentGameId);
+    if (game) {
+        game.rounds.splice(index, 1);
+        saveToStorage();
+        renderScoreboard(game);
+    }
 }
 
 function renderMatchList() {
