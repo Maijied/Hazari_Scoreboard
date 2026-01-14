@@ -4,127 +4,173 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hazari Scoreboard</title>
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- Animated Background -->
     <div class="background-blobs">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
     </div>
 
-    <div class="app-container">
-        <!-- Sidebar -->
-        <aside class="sidebar glass-panel" id="sidebar">
-            <div class="sidebar-header">
-                <h2><i class="fa-solid fa-layer-group"></i> Hazari</h2>
-                <button id="close-sidebar" class="mobile-only"><i class="fa-solid fa-times"></i></button>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar (Glassy) -->
+        <div class="glass-sidebar" id="sidebar-wrapper">
+            <div class="sidebar-heading text-center py-4 primary-text fs-4 fw-bold text-uppercase border-bottom border-light-subtle">
+                <!-- Mini Card Logo -->
+                <div class="mini-logo-container mb-2">
+                    <div class="mini-card card-l">J<i class="fa-solid fa-diamond"></i></div>
+                    <div class="mini-card card-c">K<i class="fa-solid fa-crown"></i></div>
+                    <div class="mini-card card-r">Q<i class="fa-solid fa-heart"></i></div>
+                </div>
+                Hazari
             </div>
             
-            <button id="btn-new-match" class="action-btn">
-                <i class="fa-solid fa-plus"></i> New Match
-            </button>
-
-            <div class="history-section">
-                <h3>Match History</h3>
-                <div id="match-list" class="match-list">
-                    <!-- History items injected via JS -->
+            <div class="list-group list-group-flush my-3 px-3">
+                <button id="btn-new-match" class="btn btn-glass w-100 mb-3 text-start">
+                    <i class="fa-solid fa-plus me-2"></i> New Match
+                </button>
+                
+                <h6 class="sidebar-subtitle mt-2 mb-2 text-muted text-uppercase ps-2">History</h6>
+                <div id="match-list" class="match-list-container">
+                    <!-- History injected here -->
                 </div>
-                <button id="btn-clear-history" class="text-btn danger">Clear All History</button>
+                
+                <button id="btn-clear-history" class="btn btn-link text-danger text-decoration-none mt-3 text-start ps-0">
+                    <i class="fa-solid fa-trash me-2"></i> Clear History
+                </button>
             </div>
-        </aside>
+        </div>
+        <!-- /#sidebar-wrapper -->
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <header class="top-bar glass-panel">
-                <button id="toggle-sidebar" class="icon-btn"><i class="fa-solid fa-bars"></i></button>
-                <h1>Scoreboard</h1>
-                <div class="spacer"></div>
-            </header>
-
-            <!-- View: Player Setup -->
-            <section id="view-setup" class="view active">
-                <div class="glass-card center-card">
-                    
-                    <div class="hazari-logo">
-                        <div class="card card-left">J<i class="fa-solid fa-diamond"></i></div>
-                        <div class="card card-center">K<i class="fa-solid fa-crown"></i></div>
-                        <div class="card card-right">Q<i class="fa-solid fa-heart"></i></div>
-                    </div>
-
-                    <h2>New Game Setup</h2>
-                    <p>Enter the names of the 4 players</p>
-                    
-                    <form id="setup-form">
-                        <div class="input-group">
-                            <input type="text" id="p1-name" placeholder="Player 1 Name" required>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" id="p2-name" placeholder="Player 2 Name" required>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" id="p3-name" placeholder="Player 3 Name" required>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" id="p4-name" placeholder="Player 4 Name" required>
-                        </div>
-                        <button type="submit" class="primary-btn">Start Match</button>
-                    </form>
-                </div>
-            </section>
-
-            <!-- View: Scoreboard -->
-            <section id="view-scoreboard" class="view">
-                <div class="glass-card scoreboard-card">
-                    <div class="score-header" id="score-header">
-                        <!-- Player Names Injected Here -->
-                    </div>
-                    
-                    <div class="score-body" id="score-body">
-                        <!-- Rounds Injected Here -->
-                    </div>
-
-                    <div class="score-footer" id="score-footer">
-                        <!-- Total Scores Injected Here -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper" class="w-100 d-flex flex-column" style="height: 100vh; overflow: hidden;">
+            
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg glass-navbar py-3 px-4 mb-3">
+                <div class="d-flex align-items-center w-100 justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-bars fs-4 me-3" id="menu-toggle"></i>
+                        <h2 class="fs-4 m-0 fw-bold">Scoreboard</h2>
                     </div>
                 </div>
+            </nav>
 
-                <div class="glass-card input-card">
-                    <h3>Add Round</h3>
-                    <form id="round-form" class="round-form">
-                        <div class="round-inputs">
-                            <input type="number" id="s1" placeholder="P1" required>
-                            <input type="number" id="s2" placeholder="P2" required>
-                            <input type="number" id="s3" placeholder="P3" required>
-                            <input type="number" id="s4" placeholder="P4" required>
+            <!-- Main Scrollable Area -->
+            <div class="container-fluid px-4 flex-grow-1 overflow-auto" id="main-container">
+                
+                <!-- Setup View -->
+                <section id="view-setup" class="view active fade-in">
+                    <div class="row justify-content-center mt-5">
+                        <div class="col-md-8 col-lg-6">
+                            <div class="glass-card p-5 text-center">
+                                <!-- Large Hero Logo -->
+                                <div class="hazari-logo mb-4">
+                                    <div class="card card-left">J<i class="fa-solid fa-diamond"></i></div>
+                                    <div class="card card-center">K<i class="fa-solid fa-crown"></i></div>
+                                    <div class="card card-right">Q<i class="fa-solid fa-heart"></i></div>
+                                </div>
+
+                                <h2 class="fw-bold mb-3">Start New Match</h2>
+                                <p class="text-muted mb-4">Enter the names of the 4 challengers</p>
+                                
+                                <form id="setup-form">
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-6"><input type="text" class="form-control glass-input" id="p1-name" placeholder="Player 1" required></div>
+                                        <div class="col-6"><input type="text" class="form-control glass-input" id="p2-name" placeholder="Player 2" required></div>
+                                        <div class="col-6"><input type="text" class="form-control glass-input" id="p3-name" placeholder="Player 3" required></div>
+                                        <div class="col-6"><input type="text" class="form-control glass-input" id="p4-name" placeholder="Player 4" required></div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary-glass w-100 py-2 fs-5">Let's Play</button>
+                                </form>
+                            </div>
                         </div>
-                        <div class="round-actions">
-                            <span id="current-sum" class="sum-indicator">Sum: 0</span>
-                            <button type="submit" class="primary-btn small"><i class="fa-solid fa-check"></i> Add</button>
+                    </div>
+                </section>
+
+                <!-- Scoreboard View -->
+                <section id="view-scoreboard" class="view d-none fade-in h-100 d-flex flex-column pb-5">
+                    
+                    <!-- Score Table Card -->
+                    <div class="glass-card flex-grow-1 d-flex flex-column overflow-hidden mb-3">
+                        <!-- Header -->
+                        <div class="score-header-row d-flex text-center fw-bold py-3 border-bottom border-light-subtle bg-white-50" id="score-header">
+                            <!-- JS Injects Names -->
                         </div>
-                    </form>
-                </div>
-            </section>
-        </main>
+                        
+                        <!-- Scrollable Body -->
+                        <div class="score-body flex-grow-1 overflow-auto" id="score-body">
+                            <!-- JS Injects Rows -->
+                        </div>
+
+                        <!-- Footer Totals -->
+                        <div class="score-footer-row d-flex text-center py-3 border-top border-light-subtle bg-primary-subtle text-primary fw-bolder fs-5" id="score-footer">
+                            <!-- JS Injects Totals -->
+                        </div>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="glass-card p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="m-0 fw-bold"><i class="fa-solid fa-pen-to-square me-2"></i>Add Round</h5>
+                            <button id="btn-reset-match" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                <i class="fa-solid fa-rotate-right me-1"></i> Reset Round
+                            </button>
+                        </div>
+                        
+                        <form id="round-form">
+                            <div class="row g-2">
+                                <div class="col-3"><input type="number" class="form-control glass-input text-center fw-bold" id="s1" placeholder="P1" required></div>
+                                <div class="col-3"><input type="number" class="form-control glass-input text-center fw-bold" id="s2" placeholder="P2" required></div>
+                                <div class="col-3"><input type="number" class="form-control glass-input text-center fw-bold" id="s3" placeholder="P3" required></div>
+                                <div class="col-3"><input type="number" class="form-control glass-input text-center fw-bold" id="s4" placeholder="P4" required></div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div class="sum-display" id="current-sum-display">
+                                    Total: <span id="current-sum">0</span> / 360
+                                </div>
+                                <button type="submit" class="btn btn-success-glass px-4">
+                                    <i class="fa-solid fa-plus"></i> Add
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="text-center mt-auto py-3 text-muted" style="font-size: 0.85rem;">
+                    Made with ❤️ for the Hazari Players community by <span class="fw-bold text-primary">@#MaJHi_BHai</span>
+                </footer>
+
+            </div>
+        </div>
     </div>
 
     <!-- Winner Overlay -->
     <div id="winner-overlay" class="overlay">
-        <div class="glass-card winner-card">
-            <i class="fa-solid fa-trophy trophy-icon"></i>
-            <h2>Winner!</h2>
-            <h1 id="winner-name">Player Name</h1>
-            <p>reached the target score.</p>
-            <button id="btn-close-winner" class="primary-btn">Continue</button>
+        <div class="glass-card winner-card p-5 text-center">
+            <div class="trophy-anim mb-3">🏆</div>
+            <h2 class="display-4 fw-bold text-warning">WINNER!</h2>
+            <h1 id="winner-name" class="display-3 fw-bolder my-3 text-dark">Player Name</h1>
+            <p class="fs-5 text-muted">Crossed the 1000 point mark!</p>
+            <button id="btn-close-winner" class="btn btn-primary-glass mt-3 px-5">Continue Game</button>
         </div>
         <canvas id="confetti-canvas"></canvas>
     </div>
 
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="script.js"></script>
 </body>

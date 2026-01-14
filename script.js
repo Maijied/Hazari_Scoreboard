@@ -1,13 +1,31 @@
-// State Management
+// State
 const STATE = {
     games: [],
     currentGameId: null,
 };
 
-// DOM Elements
+// UI References
 const views = {
     setup: document.getElementById('view-setup'),
     scoreboard: document.getElementById('view-scoreboard')
+};
+
+const dom = {
+    wrapper: document.getElementById('wrapper'),
+    menuToggle: document.getElementById('menu-toggle'),
+    sidebar: document.getElementById('sidebar-wrapper'),
+    matchList: document.getElementById('match-list'),
+    
+    scoreHeader: document.getElementById('score-header'),
+    scoreBody: document.getElementById('score-body'),
+    scoreFooter: document.getElementById('score-footer'),
+    
+    currentSum: document.getElementById('current-sum'),
+    currentSumDisplay: document.getElementById('current-sum-display'),
+    
+    winnerOverlay: document.getElementById('winner-overlay'),
+    winnerName: document.getElementById('winner-name'),
+    btnCloseWinner: document.getElementById('btn-close-winner')
 };
 
 const forms = {
@@ -15,34 +33,25 @@ const forms = {
     round: document.getElementById('round-form')
 };
 
-const display = {
-    header: document.getElementById('score-header'),
-    body: document.getElementById('score-body'),
-    footer: document.getElementById('score-footer'),
-    matchList: document.getElementById('match-list'),
-    currentSum: document.getElementById('current-sum')
-};
-
-const overlay = {
-    el: document.getElementById('winner-overlay'),
-    name: document.getElementById('winner-name'),
-    closeBtn: document.getElementById('btn-close-winner')
-};
-
-// Sidebar Toggle
-const sidebar = document.getElementById('sidebar');
-document.getElementById('toggle-sidebar').addEventListener('click', () => sidebar.classList.add('open'));
-document.getElementById('close-sidebar').addEventListener('click', () => sidebar.classList.remove('open'));
-document.getElementById('btn-new-match').addEventListener('click', showSetup);
-document.getElementById('btn-clear-history').addEventListener('click', clearHistory);
-
-// Initialize
-init();
+// --- Initialization ---
 
 function init() {
     loadFromStorage();
     renderMatchList();
     
+    // Sidebar Toggle Logic
+    dom.menuToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.body.classList.toggle('sb-sidenav-toggled');
+    });
+
+    // Buttons
+    document.getElementById('btn-new-match').addEventListener('click', showSetup);
+    document.getElementById('btn-clear-history').addEventListener('click', clearHistory);
+    document.getElementById('btn-reset-match').addEventListener('click', resetCurrentMatch);
+    dom.btnCloseWinner.addEventListener('click', closeWinnerModal);
+
+    // Load Game or Show Setup
     if (STATE.games.length > 0 && STATE.currentGameId) {
         loadGame(STATE.currentGameId);
     } else {
@@ -50,7 +59,7 @@ function init() {
     }
 }
 
-// --- Data Logic ---
+// --- Logic ---
 
 function loadFromStorage() {
     const data = localStorage.getItem('hazari_games');
@@ -69,36 +78,62 @@ function saveToStorage() {
 function createGame(players) {
     const newGame = {
         id: Date.now(),
-        players: players, // Array of 4 names
-        rounds: [], // Array of [s1, s2, s3, s4]
-        isActive: true,
-        winner: null
+        players: players,
+        rounds: [],
+        isActive: true
     };
-    STATE.games.unshift(newGame); // Add to top
+    STATE.games.unshift(newGame);
     STATE.currentGameId = newGame.id;
     saveToStorage();
-    loadGame(newGame.id);
     renderMatchList();
+    loadGame(newGame.id);
     
-    // Close sidebar on mobile if open
-    sidebar.classList.remove('open');
+    // Close sidebar on mobile after creation
+    if (window.innerWidth < 768) {
+        document.body.classList.remove('sb-sidenav-toggled');
+    }
 }
 
-function addRoundToCurrent(scores) {
-    const game = STATE.games.find(g => g.id === STATE.currentGameId);
+function addRound(scores) {
+    const game = getGame(STATE.currentGameId);
     if (!game) return;
-
+    
     game.rounds.push(scores);
     saveToStorage();
     renderScoreboard(game);
     checkWinner(game);
 }
 
-// --- UI Logic ---
+function resetCurrentMatch() {
+    if (!confirm("Are you sure you want to reset the scores for this match? Players will remain.")) return; 
+    
+    const game = getGame(STATE.currentGameId);
+    if (game) {
+        game.rounds = []; // Clear rounds
+        saveToStorage();
+        renderScoreboard(game);
+    }
+}
 
-function switchView(viewName) {
-    Object.values(views).forEach(el => el.classList.remove('active'));
-    views[viewName].classList.add('active');
+function getGame(id) {
+    return STATE.games.find(g => g.id === id);
+}
+
+// --- UI Rendering ---
+
+function switchView(name) {
+    // Hide all
+    Object.values(views).forEach(el => el.classList.add('d-none'));
+    Object.values(views).forEach(el => el.classList.remove('d-flex'));
+    
+    // Show target
+    if (name === 'setup') {
+        views.setup.classList.remove('d-none');
+    } else {
+        views.scoreboard.classList.remove('d-none');
+        // Add flex for layout
+        views.scoreboard.classList.add('d-flex'); 
+    }
 }
 
 function showSetup() {
@@ -106,53 +141,60 @@ function showSetup() {
     switchView('setup');
     // Clear inputs
     ['p1-name', 'p2-name', 'p3-name', 'p4-name'].forEach(id => document.getElementById(id).value = '');
+    // Close sidebar on mobile
+    if (window.innerWidth < 768) {
+        document.body.classList.remove('sb-sidenav-toggled');
+    }
 }
 
 function loadGame(id) {
-    STATE.currentGameId = id;
-    const game = STATE.games.find(g => g.id === id);
+    const game = getGame(id);
     if (!game) return showSetup();
 
+    STATE.currentGameId = id;
+    saveToStorage();
     renderScoreboard(game);
     switchView('scoreboard');
-    renderMatchList(); // To update active state
+    renderMatchList();
+    
+    // Close sidebar on mobile
+    if (window.innerWidth < 768) {
+        document.body.classList.remove('sb-sidenav-toggled');
+    }
 }
 
 function renderScoreboard(game) {
-    // 1. Header
-    display.header.innerHTML = game.players.map(p => `<div>${p}</div>`).join('');
-
-    // 2. Body
-    display.body.innerHTML = game.rounds.map((round, index) => {
+    // Header
+    dom.scoreHeader.innerHTML = game.players.map(p => `<div>${p}</div>`).join('');
+    
+    // Body
+    dom.scoreBody.innerHTML = game.rounds.map((round) => {
         return `<div class="score-row">
-            ${round.map(score => `<div>${score}</div>`).join('')}
+            ${round.map(s => `<div>${s}</div>`).join('')}
         </div>`;
     }).join('');
     
     // Scroll to bottom
-    display.body.scrollTop = display.body.scrollHeight;
+    dom.scoreBody.scrollTop = dom.scoreBody.scrollHeight;
 
-    // 3. Totals
+    // Footer (Totals)
     const totals = [0, 0, 0, 0];
-    game.rounds.forEach(round => {
-        round.forEach((score, i) => totals[i] += score);
-    });
-
-    display.footer.innerHTML = totals.map(t => {
-        const isWinning = t >= 1000;
-        return `<div class="${isWinning ? 'winner-score' : ''}">${t}</div>`;
+    game.rounds.forEach(r => r.forEach((s, i) => totals[i] += s));
+    
+    dom.scoreFooter.innerHTML = totals.map(t => {
+        const isWinner = t >= 1000;
+        return `<div class="${isWinner ? 'winner-highlight' : ''}">${t}</div>`;
     }).join('');
 }
 
 function renderMatchList() {
-    display.matchList.innerHTML = STATE.games.map(game => {
-        const date = new Date(game.id).toLocaleDateString();
-        const activeClass = game.id === STATE.currentGameId ? 'active' : '';
-        const names = game.players.join(', ');
+    dom.matchList.innerHTML = STATE.games.map(g => {
+        const active = g.id === STATE.currentGameId ? 'active' : '';
+        const date = new Date(g.id).toLocaleDateString();
         return `
-            <div class="history-item ${activeClass}" onclick="loadGame(${game.id})">
-                <div class="names">${names}</div>
-                <div class="date">${date} • ${game.rounds.length} Rounds</div>
+            <div class="list-group-item bg-transparent border-0 text-dark p-2 match-item ${active}" onclick="loadGame(${g.id})">
+                <div class="fw-bold text-truncate">${g.players.join(', ')}</div>
+                <small class="text-muted" style="font-size: 0.75rem;">${date} • ${g.rounds.length} Rounds</small>
             </div>
         `;
     }).join('');
@@ -160,36 +202,37 @@ function renderMatchList() {
 
 function checkWinner(game) {
     const totals = [0, 0, 0, 0];
-    game.rounds.forEach(round => {
-        round.forEach((score, i) => totals[i] += score);
-    });
-
-    // Find highest score >= 1000
+    game.rounds.forEach(r => r.forEach((s, i) => totals[i] += s));
+    
+    // Find winners >= 1000
+    // If multiple, highest wins.
     let maxScore = -1;
     let winnerIndex = -1;
 
-    totals.forEach((score, index) => {
-        if (score >= 1000) {
-            if (score > maxScore) {
-                maxScore = score;
-                winnerIndex = index;
-            }
+    totals.forEach((score, idx) => {
+        if (score >= 1000 && score > maxScore) {
+            maxScore = score;
+            winnerIndex = idx;
         }
     });
 
     if (winnerIndex !== -1) {
-        triggerWinner(game.players[winnerIndex]);
+        showWinner(game.players[winnerIndex]);
     }
 }
 
-function triggerWinner(name) {
-    overlay.name.textContent = name;
-    overlay.el.classList.add('active');
+function showWinner(name) {
+    dom.winnerName.textContent = name;
+    dom.winnerOverlay.classList.add('active');
     launchConfetti();
 }
 
+function closeWinnerModal() {
+    dom.winnerOverlay.classList.remove('active');
+}
+
 function clearHistory() {
-    if(confirm('Delete all game history? This cannot be undone.')) {
+    if (confirm('Delete all history?')) {
         STATE.games = [];
         STATE.currentGameId = null;
         saveToStorage();
@@ -198,88 +241,69 @@ function clearHistory() {
     }
 }
 
-// --- Event Handlers ---
+// --- Validation & Events ---
 
 forms.setup.addEventListener('submit', (e) => {
     e.preventDefault();
-    const players = [
-        document.getElementById('p1-name').value,
-        document.getElementById('p2-name').value,
-        document.getElementById('p3-name').value,
-        document.getElementById('p4-name').value,
-    ];
+    const players = [1,2,3,4].map(i => document.getElementById(`p${i}-name`).value.trim());
+    if (players.some(p => !p)) return alert("Please fill all names");
     createGame(players);
 });
 
 forms.round.addEventListener('submit', (e) => {
     e.preventDefault();
-    const inputs = [
-        document.getElementById('s1'),
-        document.getElementById('s2'),
-        document.getElementById('s3'),
-        document.getElementById('s4')
-    ];
+    const inputs = [1,2,3,4].map(i => document.getElementById(`s${i}`));
+    const scores = inputs.map(el => parseInt(el.value) || 0);
     
-    const scores = inputs.map(input => parseInt(input.value) || 0);
-    const sum = scores.reduce((a, b) => a + b, 0);
-
-    if (sum !== 1000) {
-        alert(`Total score must equal 1000. Current sum: ${sum}`);
+    // NEW LOGIC: SUM MUST BE 360
+    const sum = scores.reduce((a,b) => a+b, 0);
+    if (sum !== 360) {
+        alert(`Invalid Score! Total must be 360.\nCurrent Sum: ${sum}`);
         return;
     }
 
-    addRoundToCurrent(scores);
-    
-    // Clear inputs
-    inputs.forEach(input => input.value = '');
+    addRound(scores);
+    inputs.forEach(el => el.value = '');
     updateSumDisplay();
-    // Focus first input
     inputs[0].focus();
 });
 
-// Sum Calculator Logic
-const scoreInputs = document.querySelectorAll('.round-inputs input');
+// Sum Calculator
+const scoreInputs = document.querySelectorAll('#round-form input');
 scoreInputs.forEach(input => {
     input.addEventListener('input', updateSumDisplay);
 });
 
 function updateSumDisplay() {
     let sum = 0;
-    scoreInputs.forEach(input => {
-        sum += parseInt(input.value) || 0;
-    });
+    scoreInputs.forEach(input => sum += (parseInt(input.value) || 0));
+    dom.currentSum.textContent = sum;
     
-    display.currentSum.textContent = `Sum: ${sum}`;
-    if (sum === 1000) {
-        display.currentSum.className = 'sum-indicator valid';
+    if (sum === 360) {
+        dom.currentSumDisplay.className = 'sum-display text-success fw-bold';
+    } else if (sum > 360) {
+        dom.currentSumDisplay.className = 'sum-display text-danger fw-bold';
     } else {
-        display.currentSum.className = 'sum-indicator invalid';
+        dom.currentSumDisplay.className = 'sum-display text-muted';
     }
 }
 
-overlay.closeBtn.addEventListener('click', () => {
-    overlay.el.classList.remove('active');
-});
-
-// --- Confetti Animation ---
+// Confetti
 function launchConfetti() {
     var duration = 3000;
     var animationEnd = Date.now() + duration;
-    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1001 };
+    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 3000 };
 
-    function randomInOut(min, max) {
-        return Math.random() * (max - min) + min;
-    }
+    function randomInOut(min, max) { return Math.random() * (max - min) + min; }
 
     var interval = setInterval(function() {
         var timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-            return clearInterval(interval);
-        }
-
+        if (timeLeft <= 0) return clearInterval(interval);
         var particleCount = 50 * (timeLeft / duration);
         confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInOut(0.1, 0.3), y: Math.random() - 0.2 } }));
         confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInOut(0.7, 0.9), y: Math.random() - 0.2 } }));
     }, 250);
 }
+
+// Start
+init();
